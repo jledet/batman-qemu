@@ -1,0 +1,12 @@
+port/create 1
+port/create 2
+port/create 3
+port/setcolourful 1
+port/setcolourful 2
+port/setcolourful 3
+port/sethub 1
+port/sethub 2
+port/sethub 3
+port/setcolour 1 1
+port/setcolour 2 2
+port/setcolour 3 3
