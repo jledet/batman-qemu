@@ -2,7 +2,7 @@
 QEMU=$(which qemu-kvm)
 VDESWITCH=$(which vde_switch)
 WF=$(which wirefilter)
-IMAGE=../openwrt/bin/x86/openwrt-x86-generic-combined-jffs2-128k.img
+IMAGE=../backfire/bin/x86/openwrt-x86-generic-combined-squashfs.img
 
 # you can set this if you are running as root and don't need sudo:
 # SUDO=
