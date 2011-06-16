@@ -11,9 +11,12 @@ SUDO=sudo
 ./stop.sh
 
 ${VDESWITCH} \
-    -d --sock ab.ctl -f ab.rc
+    -d --sock chain1.ctl -f chain.rc
+${VDESWITCH} \
+    -d --sock chain2.ctl -f chain.rc
+dpipe vde_plug chain1.ctl -p 3 = vde_plug chain2.ctl -p 3 &
 
-for i in $(seq 1 3); 
+for i in $(seq 1 4); 
 do
 	cp ${IMAGE} num${i}.image
 done
@@ -21,7 +24,7 @@ done
 screen ${QEMU} \
     -enable-kvm \
     -no-acpi -m 32M \
-    -net vde,sock=ab.ctl,port=1,vlan=0 \
+    -net vde,sock=chain1.ctl,port=1,vlan=0 \
     -net nic,macaddr=fe:fe:00:0a:01:01,model=e1000,vlan=0 \
     -nographic num1.image
     #-net nic,model=e1000,vlan=2 -net tap,ifname=tapwrt1,vlan=2 \
@@ -31,7 +34,7 @@ sleep 5
 screen ${QEMU} \
     -enable-kvm \
     -no-acpi -m 32M \
-    -net vde,sock=ab.ctl,port=2,vlan=0 \
+    -net vde,sock=chain1.ctl,port=2,vlan=0 \
     -net nic,macaddr=fe:fe:00:0a:02:01,model=e1000,vlan=0 \
     -nographic num2.image
     #-net nic,model=e1000,vlan=2 -net tap,ifname=tapwrt2,vlan=2 \
@@ -41,9 +44,19 @@ sleep 5
 screen ${QEMU} \
     -enable-kvm \
     -no-acpi -m 32M \
-    -net vde,sock=ab.ctl,port=3,vlan=0 \
+    -net vde,sock=chain2.ctl,port=2,vlan=0 \
     -net nic,macaddr=fe:fe:00:0a:03:01,model=e1000,vlan=0 \
     -nographic num3.image
+    #-net nic,model=e1000,vlan=2 -net tap,ifname=tapwrt3,vlan=2 \
+    #-gdb tcp::8005 \
+sleep 5
+
+screen ${QEMU} \
+    -enable-kvm \
+    -no-acpi -m 32M \
+    -net vde,sock=chain2.ctl,port=1,vlan=0 \
+    -net nic,macaddr=fe:fe:00:0a:04:01,model=e1000,vlan=0 \
+    -nographic num4.image
     #-net nic,model=e1000,vlan=2 -net tap,ifname=tapwrt3,vlan=2 \
     #-gdb tcp::8005 \
 sleep 5
